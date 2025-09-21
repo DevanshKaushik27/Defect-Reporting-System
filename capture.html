@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture - Defect Capture System</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+    
+    .view-defects-btn {
+      background-color: #1a73e8;
+      color: white;
+    }
+    
+    .view-defects-btn:hover {
+      background-color: #0d47a1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome!</h1>
+    <p>Click the button below to capture a photo using your camera.</p>
+    
+    <div class="button-group">
+      <button id="capture-btn">Capture New Defect</button>
+      <button id="view-defects-btn" class="view-defects-btn">View Logged Defects</button>
+      <button class="back-button" id="logout-btn">Logout</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const captureBtn = document.getElementById('capture-btn');
+      const viewDefectsBtn = document.getElementById('view-defects-btn');
+      const logoutBtn = document.getElementById('logout-btn');
+      
+      // Navigate to camera page when capture button is clicked
+      captureBtn.addEventListener('click', function() {
+        window.location.href = 'camera.html';
+      });
+      
+      // Navigate to defect list page when view defects button is clicked
+      viewDefectsBtn.addEventListener('click', function() {
+        window.location.href = 'defect-list.html';
+      });
+      
+      // Navigate back to login page when logout button is clicked
+      logoutBtn.addEventListener('click', function() {
+        window.location.href = 'login.html';
+      });
+    });
+  </script>
+</body>
+</html> 

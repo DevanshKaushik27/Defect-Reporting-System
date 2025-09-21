@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camera - Defect Capture System</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Camera Capture</h1>
+    
+    <div class="video-container">
+      <video id="video" autoplay playsinline></video>
+    </div>
+    
+    <div class="button-group">
+      <button class="back-button" id="back-btn">Back</button>
+      <button id="click-btn">Click Photo</button>
+    </div>
+    
+    <div class="capture-result">
+      <h2>Captured Image</h2>
+      <canvas id="canvas" style="display:none;"></canvas>
+      <img id="captured-image" style="display:none;" alt="Captured image will appear here">
+      <div class="button-group" id="continue-btn-container" style="display:none;">
+        <button id="continue-btn">Continue to Defect Details</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const video = document.getElementById('video');
+      const canvas = document.getElementById('canvas');
+      const capturedImage = document.getElementById('captured-image');
+      const clickBtn = document.getElementById('click-btn');
+      const backBtn = document.getElementById('back-btn');
+      const continueBtn = document.getElementById('continue-btn');
+      const continueBtnContainer = document.getElementById('continue-btn-container');
+      
+      let stream = null;
+      let imageData = null;
+      
+      // Request access to the webcam
+      async function startCamera() {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: 'environment' },
+            audio: false 
+          });
+          video.srcObject = stream;
+        } catch (err) {
+          alert('Error accessing camera: ' + err.message);
+          console.error('Error accessing camera:', err);
+        }
+      }
+      
+      // Start the camera when page loads
+      startCamera();
+      
+      // Capture photo when click button is pressed
+      clickBtn.addEventListener('click', function() {
+        // Set canvas dimensions to match the video
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // Draw video frame to canvas
+        const context = canvas.getContext('2d');
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Convert canvas to image
+        imageData = canvas.toDataURL('image/png');
+        capturedImage.src = imageData;
+        
+        // Show the captured image and continue button
+        capturedImage.style.display = 'block';
+        canvas.style.display = 'none';
+        continueBtnContainer.style.display = 'flex';
+      });
+      
+      // Navigate to defect details page with the captured image
+      continueBtn.addEventListener('click', function() {
+        // Store the image data in localStorage
+        localStorage.setItem('capturedImage', imageData);
+        
+        // Stop all video tracks to turn off the camera
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+        }
+        
+        // Navigate to defect details page
+        window.location.href = 'defect-details.html';
+      });
+      
+      // Navigate back to capture page
+      backBtn.addEventListener('click', function() {
+        // Stop all video tracks to turn off the camera
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+        }
+        
+        window.location.href = 'capture.html';
+      });
+    });
+  </script>
+</body>
+</html> 

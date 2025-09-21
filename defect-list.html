@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Defect List - Defect Logging System</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .defect-list {
+      margin-top: 2rem;
+      width: 100%;
+    }
+    
+    .defect-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      background-color: #f9f9f9;
+    }
+    
+    .defect-image {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-right: 1rem;
+    }
+    
+    .defect-details {
+      flex: 1;
+    }
+    
+    .defect-id {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+    
+    .severity-high, .severity-critical {
+      color: #d93025;
+      font-weight: bold;
+    }
+    
+    .severity-medium {
+      color: #f29900;
+      font-weight: bold;
+    }
+    
+    .severity-low {
+      color: #1a73e8;
+      font-weight: bold;
+    }
+    
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .defect-card {
+        flex-direction: column;
+      }
+      
+      .defect-image {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Defect List</h1>
+    
+    <div class="nav-buttons">
+      <button class="back-button" id="back-btn">Back to Capture</button>
+    </div>
+    
+    <div id="loading-message">Loading defects...</div>
+    <div id="error-message" style="display: none; color: red;"></div>
+    <div id="defect-list" class="defect-list"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const defectList = document.getElementById('defect-list');
+      const loadingMessage = document.getElementById('loading-message');
+      const errorMessage = document.getElementById('error-message');
+      const backBtn = document.getElementById('back-btn');
+      
+      // Navigation
+      backBtn.addEventListener('click', function() {
+        window.location.href = 'capture.html';
+      });
+      
+      // Format date
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleString();
+      }
+      
+      // Get severity class
+      function getSeverityClass(severity) {
+        switch(severity.toLowerCase()) {
+          case 'high':
+          case 'critical':
+            return 'severity-' + severity.toLowerCase();
+          case 'medium':
+            return 'severity-medium';
+          default:
+            return 'severity-low';
+        }
+      }
+      
+      // Load defects
+      async function loadDefects() {
+        try {
+          const response = await fetch('/api/defects');
+          if (!response.ok) {
+            throw new Error('Failed to fetch defects');
+          }
+          
+          const defects = await response.json();
+          loadingMessage.style.display = 'none';
+          
+          if (defects.length === 0) {
+            defectList.innerHTML = '<p>No defects found.</p>';
+            return;
+          }
+          
+          defectList.innerHTML = '';
+          
+          defects.forEach(defect => {
+            const defectCard = document.createElement('div');
+            defectCard.className = 'defect-card';
+            
+            // Create the HTML for each defect
+            defectCard.innerHTML = `
+              <img src="${defect.imageUrl}" alt="Defect Image" class="defect-image" onerror="this.src='https://via.placeholder.com/120?text=No+Image'">
+              <div class="defect-details">
+                <div class="defect-id">${defect.defectId}</div>
+                <p><strong>Type:</strong> ${defect.defectType}</p>
+                <p><strong>Severity:</strong> <span class="${getSeverityClass(defect.severity)}">${defect.severity}</span></p>
+                <p><strong>Location:</strong> ${defect.location}</p>
+                <p><strong>Status:</strong> ${defect.status}</p>
+                <p><strong>Reported by:</strong> ${defect.reportedBy}</p>
+                <p><strong>Date:</strong> ${formatDate(defect.timestamp)}</p>
+                <a href="defect-details.html?id=${defect.defectId}" class="btn">View Details</a>
+              </div>
+            `;
+            
+            defectList.appendChild(defectCard);
+          });
+        } catch (error) {
+          console.error('Error loading defects:', error);
+          loadingMessage.style.display = 'none';
+          errorMessage.style.display = 'block';
+          errorMessage.textContent = `Error loading defects: ${error.message}`;
+        }
+      }
+      
+      // Load defects when page loads
+      loadDefects();
+    });
+  </script>
+</body>
+</html> 
