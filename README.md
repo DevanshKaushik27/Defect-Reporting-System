@@ -20,40 +20,42 @@ A comprehensive web-based defect reporting and management system designed for ca
 - **📸 Camera Integration**: Capture defect images directly from device camera
 - **📝 Defect Management**: Create, view, update, and track defects
 - **🖼️ Image Storage**: Secure local storage of defect images with unique identifiers
-- **🔄 Real-time Updates**: Live defect status updates and tracking
+- **🔄 Status Updates**: Defect status changes are persisted on the server and reflected when data is reloaded
 - **📱 Responsive Design**: Mobile-friendly interface for field use
 - **🔍 Defect Tracking**: Complete lifecycle management from New to Resolved
 
 ### 🎯 Key Components
-- **🔐 User Authentication**: Simple login system for access control
+- **🔐 Demo Login Screen**: Simple client-side login form for navigation (no real authentication or authorization yet)
 - **📷 Defect Capture**: Camera-based image capture with form data
 - **📋 Defect Listing**: Comprehensive view of all reported defects
 - **📄 Defect Details**: Detailed view with full defect information
 - **📊 Status Management**: Track defect status from New to Resolved
-- **🔍 Search & Filter**: Easy navigation through defect records
+- **📂 Defect History View**: Browse previously logged defects with thumbnails and key metadata
 
 ### 🎨 User Interface
 - **Modern Design**: Clean, intuitive interface with Bootstrap 5
 - **Mobile Optimized**: Touch-friendly design for mobile devices
-- **Accessibility**: WCAG compliant design elements
+- **Accessibility**: Basic accessibility best practices (semantic HTML, focus on contrast and readable typography)
 - **Cross-browser Support**: Works on all modern browsers
 
 ## 🛠️ Technology Stack
 
 ### Backend
-- **Node.js** (v14+) - Runtime environment
-- **Express.js** (v4.x) - Web application framework
-- **JSON File Storage** - Lightweight data persistence
-- **Multer** - File upload handling
-- **UUID** - Unique identifier generation
-- **CORS** - Cross-origin resource sharing
+- **Node.js** (v14+) - JavaScript runtime environment
+- **Express.js** (v4.x) - HTTP server and routing
+- **Filesystem JSON Storage** - Lightweight persistence using `data/defects.json` (no database required)
+- **UUID** (`uuid`) - Unique identifier and image filename generation
+- **CORS** (`cors`) - Cross-origin resource sharing middleware
+- **dotenv** (optional) - Environment variable configuration for production deployments
+
+> **Note**: The project currently includes packages like **mongoose**, **mssql**, **msnodesqlv8**, and **aws-sdk** in `package.json` for future integration with MongoDB/SQL Server and cloud storage (e.g., S3). These are **not yet wired into the running application**; the live system uses filesystem-based storage only.
 
 ### Frontend
 - **HTML5** - Semantic markup
 - **CSS3** - Modern styling with responsive design
 - **JavaScript (ES6+)** - Client-side functionality
-- **Bootstrap 5** - UI framework for responsive design
-- **Camera API** - Native browser camera integration
+- **Bootstrap 5** - UI framework used on the landing page (`index.html`) for layout and components
+- **Camera / MediaDevices API** - Native browser `getUserMedia` integration for camera access
 
 ### Development Tools
 - **Nodemon** - Development server with auto-restart
